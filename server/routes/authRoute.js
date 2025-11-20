@@ -1,5 +1,5 @@
 import express from "express";
-import { isAuthenticated, login, logout, register, resetPassword, sendResetOtp, sendVerifyOtp, verifyEmail } from "../controllers/authController.js";
+import { isAuthenticated, login, logout, register, resetPassword, sendResetOtp, sendVerifyOtp, verifyEmail, getLoggedInUser } from "../controllers/authController.js";
 import userAuth from "../middleware/userAuth.js";
 import multer from "multer";
 
@@ -17,6 +17,8 @@ authRouter.post('/verify-account',userAuth, verifyEmail);
 authRouter.get('/is-Auth',userAuth, isAuthenticated);
 authRouter.post('/send-reset-otp',sendResetOtp);
 authRouter.post('/reset-password',resetPassword);
+authRouter.get("/me",userAuth, getLoggedInUser);
+
 
 
 

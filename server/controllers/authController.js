@@ -358,3 +358,19 @@ export const resetPassword = async (req, res) => {
     return res.json({ success: false, message: error.message });
   }
 };
+
+export const getLoggedInUser = async (req, res) => {
+  try {
+    const user = await global.User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    return res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};

@@ -1,0 +1,5 @@
+@import "tailwindcss";
+.signup-input {
+  @apply w-full p-3 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white
+         focus:ring-2 focus:ring-blue-500 outline-none transition;
+}
