@@ -28,7 +28,7 @@ const allowedOrigins = [`http://localhost:${port}`];
 
 // ✅ 2. Apply CORS middleware FIRST
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173", "https://69214c7111316eaa3c0a7979--mentorrlinq.netlify.app", "https://mentorlinq.com"],
   credentials: true,
 }));
 
