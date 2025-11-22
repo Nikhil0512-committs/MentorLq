@@ -87,6 +87,16 @@ export default function MenteeSignup() {
   return (
     <div className="min-h-screen flex justify-center bg-gray-50 py-10 px-4">
       <div className="w-full max-w-xl bg-white rounded-xl shadow-md p-8">
+        {/* --- NEW: MENTOR SWITCH BUTTON --- */}
+        <div className="flex justify-end mb-2">
+          <button
+            onClick={() => navigate("/signup/mentor")}
+            className="text-sm text-blue-600 hover:text-blue-800 font-medium hover:underline transition"
+          >
+            Are you a Mentor? Apply here →
+          </button>
+        </div>
+        {/* -------------------------------- */}
         <h2 className="text-2xl font-semibold text-center mb-3">Create Your Mentee Account</h2>
         <p className="text-gray-600 text-center mb-6">
           Let mentors understand your background better
