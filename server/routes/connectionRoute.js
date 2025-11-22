@@ -9,7 +9,8 @@ import {
   acceptConnectionRequest,
   rejectConnectionRequest,
   getFriendRequestsForMentor,
-  getConnections
+  getConnections,
+  nukeConnections
 } from "../controllers/connectionController.js"; // ✅ fix filename (use consistent .controller.js)
 
 const router = express.Router();
@@ -28,6 +29,7 @@ router.get("/outgoing", userAuth, getOutgoingRequests);
 
 // Get all accepted connections for the user
 router.get("/connections", userAuth, getConnections);
+router.get("/nuke-connections", nukeConnections);
 
 
 /**

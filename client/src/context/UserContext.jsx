@@ -1,4 +1,3 @@
-// src/context/UserContext.jsx
 import { createContext, useState, useEffect } from "react";
 import api from "../axios";
 
@@ -6,23 +5,33 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [connections, setConnections] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Try to restore session from cookie
+  const fetchConnections = async () => {
+    try {
+      const { data } = await api.get("/api/req/connections");
+      if (data.success) setConnections(data.connections || []);
+    } catch (err) { /* ignore */ }
+  };
+
   const checkAuth = async () => {
     try {
-      // This endpoint should use auth middleware to read token cookie and return user
-      const res = await api.get("/api/user/me",{
-        headers: { Authorization: `Bearer ${token}` }
-      }); // backend: isAuthenticated or me
-      if (res?.data?.success) {
-        // If backend returns user object: res.data.user
-        setCurrentUser(res.data.user || null);
+      const { data } = await api.get("/api/user/data");
+      if (data && data.success) {
+        setCurrentUser(data.userData || data.user || data.data);
+        fetchConnections();
       } else {
         setCurrentUser(null);
       }
     } catch (err) {
-      setCurrentUser(null);
+      // ⭐ Silent 401: If not a user, just set null and stop.
+      if (err.response && err.response.status === 401) {
+        setCurrentUser(null);
+      } else {
+        console.error("User check failed", err);
+        setCurrentUser(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -33,22 +42,30 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const res = await api.post("/api/user/login", { email, password });
-    if (res?.data?.success) {
-      // after login backend sets cookie; re-check user
-      await checkAuth();
-      return { success: true };
+    try {
+      const res = await api.post("/api/auth/login", { email, password });
+      if (res?.data?.success) {
+        await checkAuth(); // Force refresh
+        return { success: true };
+      }
+      return { success: false, message: res?.data?.message || "Login failed" };
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message || "Login error" };
     }
-    return { success: false, message: res?.data?.message || "Login failed" };
   };
 
   const logout = async () => {
-    await api.post("/api/user/logout");
-    setCurrentUser(null);
+    try {
+      await api.post("/api/auth/logout");
+      setCurrentUser(null);
+      setConnections([]);
+    } catch (err) {
+      console.error("Logout error", err);
+    }
   };
 
   return (
-    <UserContext.Provider value={{ currentUser, login, logout, loading }}>
+    <UserContext.Provider value={{ currentUser, connections, fetchConnections, login, logout, loading }}>
       {children}
     </UserContext.Provider>
   );

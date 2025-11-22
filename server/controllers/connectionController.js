@@ -163,29 +163,59 @@ export const getFriendRequestsForMentor = async (req, res) => {
  * - It returns all accepted connections where the caller is either sender or recipient.
  * - We populate both sides with the fields client UI needs.
  */
+// 🔥 DANGER: One-time route to clear all connections
+
 export const getConnections = async (req, res) => {
   try {
-    // support both userAuth (req.user.id) and mentorAuth (req.mentor._id)
     const callerId = req.user?.id || req.mentor?._id;
     if (!callerId) return res.status(401).json({ success: false, message: "Not authenticated" });
 
+    // 1. Get all connections
     const connections = await global.ConnectionRequest.find({
       $or: [{ sender: callerId }, { recipient: callerId }],
       status: "accepted",
     })
-      .populate(
-      "sender",
-      "name email photo college specialization internshipCompany careerInterest mentorshipAreas bio linkedIn"
-      )
-      .populate(
-      "recipient",
-      "name email photo college specialization internshipComp career skills bio linkedIn"
-)
+      .populate("sender", "name email photo specialization careerInterest mentorshipAreas  bio linkedIn ")
+      .populate("recipient", "name email photo specialization skills bio linkedIn")
+      .sort({ updatedAt: -1 }); // ⭐ Show newest connections first
 
+    // 2. ⭐ CRITICAL FIX: Filter out "Ghosts"
+    // If a user was deleted from the DB, 'sender' or 'recipient' will be null.
+    // We filter those out so the frontend never receives them.
+    const validConnections = connections.filter(c => {
+        return c.sender?._id && c.recipient?._id;
+    });
 
-    return res.json({ success: true, connections });
+    return res.json({ success: true, connections: validConnections });
   } catch (err) {
     console.error("getConnections error:", err);
     return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+// server/controllers/connectionController.js
+
+// ... existing functions (sendConnectionRequest, getConnections, etc.) ...
+
+// 🔥 DANGER: One-time function to clear all connections
+export const nukeConnections = async (req, res) => {
+  try {
+    // 1. Delete all connection requests
+    await global.ConnectionRequest.deleteMany({});
+    
+    // 2. (Optional but recommended) Clear the connections array in Users and Mentors too
+    // This ensures no "ghost" IDs remain in the user profiles
+    if (global.User) {
+      await global.User.updateMany({}, { $set: { connections: [] } });
+    }
+    if (global.Mentor) {
+      await global.Mentor.updateMany({}, { $set: { connections: [] } });
+    }
+
+    return res.json({ success: true, message: "💥 All connections and lists nuked successfully." });
+  } catch (err) {
+    console.error("Nuke error:", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+

@@ -1,9 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext"; 
+import { MentorContext } from "../context/MentorContext"; 
+import { toast } from "react-toastify";
+import { assets } from "../assets/assets";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("mentee");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { login: menteeLogin } = useContext(UserContext);
+  const { mentorLogin } = useContext(MentorContext);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    if (activeTab === "mentee") {
+      // MENTEE LOGIN
+      const res = await menteeLogin(email, password);
+      if (res.success) {
+        toast.success("Logged in as Mentee");
+        navigate("/dashboard");
+      } else {
+        toast.error(res.message || "Login failed");
+      }
+    } else {
+      // MENTOR LOGIN
+      const ok = await mentorLogin(email, password);
+      if (ok) {
+        toast.success("Logged in as Mentor");
+        navigate("/mentor/dashboard");
+      } else {
+        toast.error("Mentor login failed");
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -12,12 +48,7 @@ export default function LoginPage() {
         
         {/* Logo */}
         <div className="w-full flex justify-center mb-6">
-          {/* Replace with your actual logo image */}
-          <img 
-            src="/yourLogo.png" 
-            alt="MentorLinq" 
-            className="h-10"
-          />
+          <img src={assets.MentorLinqLogobg}   alt="MentorLinq" className="h-25 -mt-10 -mb-10" />
         </div>
 
         {/* Title */}
@@ -58,6 +89,8 @@ export default function LoginPage() {
               type="email"
               placeholder="Enter your email"
               className="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -67,13 +100,15 @@ export default function LoginPage() {
               type="password"
               placeholder="Enter your password"
               className="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
         </div>
 
         {/* Login Button */}
         <button
-          onClick={() => navigate("/dashboard")}
+          onClick={handleLogin}
           className="w-full mt-6 bg-blue-600 text-white py-2.5 rounded-lg text-center font-semibold hover:bg-blue-700 transition"
         >
           Log In
@@ -83,7 +118,7 @@ export default function LoginPage() {
         <div className="text-center mt-5 text-sm text-gray-600">
           Don't have an account?
           <span
-            onClick={() => navigate("/signup-mentee")}
+            onClick={() => navigate("/signup/mentee")}
             className="text-blue-600 cursor-pointer ml-1"
           >
             Sign up as a mentee
@@ -91,7 +126,7 @@ export default function LoginPage() {
           <br />
           or
           <span
-            onClick={() => navigate("/signup-mentor")}
+            onClick={() => navigate("/signup/mentor")}
             className="text-blue-600 cursor-pointer ml-1"
           >
             Apply to be a mentor

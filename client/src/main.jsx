@@ -11,11 +11,13 @@ import { MentorProvider } from "./context/MentorContext";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
+    <MentorProvider>
       <UserProvider>
-        <MentorProvider>
+        
           <App />
-        </MentorProvider>
+        
       </UserProvider>
+      </MentorProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
