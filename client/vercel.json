@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:match*",
+      "destination": "http://mentorlinq.ap-south-1.elasticbeanstalk.com/api/:match*"
+    }
+  ]
+}
