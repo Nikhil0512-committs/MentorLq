@@ -184,7 +184,7 @@ export default function MenteeSignup() {
 
           <div>
             <label className="font-medium text-gray-700 text-sm">Specialization <span className="text-red-500">*</span></label>
-            <input className="signup-input" value={mbaSpecialization} onChange={(e) => setMbaSpecialization(e.target.value)} placeholder="e.g. MBA 2nd Year, Marketing" />
+            <input className="signup-input" value={mbaSpecialization} onChange={(e) => setMbaSpecialization(e.target.value)} placeholder="e.g. Marketing" />
           </div>
 
           <div>
