@@ -57,6 +57,11 @@ export default function MenteeSignup() {
     setSubmitting(true);
 
     try {
+      if (selectedCareer.length < 1 || selectedMentorship.length < 1) {
+         alert("Please select at least 1 option in both Career Interests and Mentorship Areas.");
+         setSubmitting(false);
+         return;
+       }
       const fd = new FormData();
       fd.append("name", name);
       fd.append("email", email);
