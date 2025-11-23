@@ -209,7 +209,7 @@ export default function MentorSignup() {
               className="signup-input"
               value={specialization}
               onChange={(e) => setSpecialization(e.target.value)}
-              placeholder="e.g. SDE, Product, AI"
+              placeholder="e.g. Product, AI"
             />
           </div>
 
@@ -252,7 +252,7 @@ export default function MentorSignup() {
           {/* SKILLS */}
           <div>
             <label className="font-medium text-gray-800 text-sm">
-              Skills to Offer (Max 4) <span className="text-red-500">*</span>
+              Skills to Offer (Atleast 2 and upto 4) <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-2 gap-3 mt-2">
               {skillOptions.map((item) => (
@@ -275,7 +275,7 @@ export default function MentorSignup() {
           {/* CAREER */}
           <div>
             <label className="font-medium text-gray-800 text-sm">
-              Career Areas in which you can guide (Max 4) <span className="text-red-500">*</span>
+              Career Areas in which you can guide (Atleast 2 and upto 4) <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-2 gap-3 mt-2">
               {careerOptions.map((item) => (
