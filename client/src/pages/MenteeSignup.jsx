@@ -37,20 +37,30 @@ export default function MenteeSignup() {
   };
 
   const toggleCareer = (item) => {
-    if (selectedCareer.includes(item)) {
-      setSelectedCareer(selectedCareer.filter((x) => x !== item));
-    } else if (selectedCareer.length < 2) {
-      setSelectedCareer([...selectedCareer, item]);
+  setSelectedCareer((prev) => {
+    if (prev.includes(item)) {
+      return prev.filter((x) => x !== item); // remove
     }
-  };
+    if (prev.length === 2) {
+      return prev; // prevent selecting more than 2
+    }
+    return [...prev, item]; // add
+  });
+};
+
 
   const toggleMentorship = (item) => {
-    if (selectedMentorship.includes(item)) {
-      setSelectedMentorship(selectedMentorship.filter((x) => x !== item));
-    } else if (selectedMentorship.length < 2) {
-      setSelectedMentorship([...selectedMentorship, item]);
+  setSelectedMentorship((prev) => {
+    if (prev.includes(item)) {
+      return prev.filter((x) => x !== item); // remove
     }
-  };
+    if (prev.length === 2) {
+      return prev; // prevent selecting more than 2
+    }
+    return [...prev, item]; // add
+  });
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
