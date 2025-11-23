@@ -211,7 +211,7 @@ export default function MenteeSignup() {
           <div>
             <label className="font-medium text-gray-800 text-sm">Career Interests <span className="text-red-500">*</span></label>
             <p className="text-xs text-gray-500 mb-2">
-              Select up to <strong>2</strong> options.
+              Select exactly <strong>2</strong> options.
             </p>
 
             <div className="grid grid-cols-2 gap-3">
@@ -234,7 +234,7 @@ export default function MenteeSignup() {
           <div>
             <label className="font-medium text-gray-800 text-sm">Help Needed in these sections <span className="text-red-500">*</span></label>
             <p className="text-xs text-gray-500 mb-2">
-              Select up to <strong>2</strong>.
+              Select exactly <strong>2</strong> options.
             </p>
 
             <div className="grid grid-cols-2 gap-3">
