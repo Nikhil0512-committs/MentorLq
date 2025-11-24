@@ -1,13 +1,12 @@
 {
-  "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/api/:match*",
-      "destination": "http://mentorlinq.ap-south-1.elasticbeanstalk.com/api/:match*"
+      "source": "/api/(.*)",
+      "destination": "http://mentorlinq.ap-south-1.elasticbeanstalk.com/api/$1"
     },
     {
       "source": "/(.*)",
-      "destination": "/"
+      "destination": "/index.html"
     }
   ]
 }
