@@ -184,14 +184,14 @@ export default function VideoCallPage() {
   // ---------------------------
   if (loading) {
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-950 text-white gap-4">
+      <div className="h-[100dvh] w-full flex flex-col items-center justify-center bg-gray-950 text-white gap-4">
         <div className="relative">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           <div className="absolute inset-0 flex items-center justify-center text-xl">
             📹
           </div>
         </div>
-        <p className="animate-pulse font-light tracking-wide">
+        <p className="animate-pulse font-light tracking-wide text-sm">
           Securing connection...
         </p>
       </div>
@@ -201,38 +201,44 @@ export default function VideoCallPage() {
   if (!videoClient || !call) return null;
 
   // ---------------------------
-  // UI (UNCHANGED)
+  // MOBILE OPTIMIZED UI
   // ---------------------------
   return (
     <StreamVideo client={videoClient}>
       <StreamTheme>
         {/* IMPORTANT: Prevent implicit join */}
         <StreamCall call={call} join={false}>
-          <div className="h-screen w-screen bg-[#121417] relative flex flex-col overflow-hidden">
-            {/* Header */}
-            <div className="absolute top-0 left-0 w-full p-4 z-20 flex justify-between items-start bg-gradient-to-b from-black/60 to-transparent pointer-events-none">
-              <div className="pointer-events-auto flex items-center gap-3 bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                <span className="text-white text-sm font-medium tracking-wide">
-                  Live Call
+          {/* Main Container: Uses 100dvh for proper mobile browser height */}
+          <div className="h-[100dvh] w-screen bg-[#121417] relative flex flex-col overflow-hidden">
+            
+            {/* Header - Absolute & Transparent */}
+            <div className="absolute top-0 left-0 w-full p-3 md:p-4 z-20 flex justify-between items-start bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none">
+              
+              {/* Badge */}
+              <div className="pointer-events-auto flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 shadow-sm">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+                <span className="text-white text-xs md:text-sm font-medium tracking-wide">
+                  Live
                 </span>
               </div>
 
-              <div className="pointer-events-auto">
+              {/* Participants */}
+              <div className="pointer-events-auto transform scale-90 origin-top-right md:scale-100">
                 <CallParticipantsList />
               </div>
             </div>
 
-            {/* Video Grid */}
-            <div className="flex-1 flex items-center justify-center p-2 md:p-6">
-              <div className="w-full h-full max-w-6xl rounded-3xl overflow-hidden shadow-2xl border border-white/5 bg-black/20 backdrop-blur-sm">
-                <SpeakerLayout participantsBarPosition="right" />
+            {/* Video Grid - Maximize Space */}
+            <div className="flex-1 flex items-center justify-center w-full h-full relative">
+              {/* Removed heavy padding/borders for mobile to make video larger */}
+              <div className="w-full h-full md:max-w-6xl md:h-auto md:aspect-video md:rounded-3xl md:overflow-hidden md:border md:border-white/5 md:bg-black/20 md:backdrop-blur-sm">
+                <SpeakerLayout participantsBarPosition="bottom" />
               </div>
             </div>
 
-            {/* Controls */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
-              <div className="bg-gray-900/80 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full shadow-2xl flex gap-4 items-center hover:bg-gray-900 transition-all duration-300">
+            {/* Controls - Mobile Friendly Position */}
+            <div className="absolute bottom-6 md:bottom-8 left-0 w-full z-30 flex justify-center px-4 pointer-events-none">
+              <div className="pointer-events-auto bg-gray-900/90 backdrop-blur-xl border border-white/10 px-4 py-3 md:px-6 md:py-4 rounded-2xl md:rounded-full shadow-2xl flex gap-3 md:gap-4 items-center overflow-x-auto max-w-full no-scrollbar transition-all duration-300">
                 <CallControls onLeave={handleLeave} />
               </div>
             </div>
