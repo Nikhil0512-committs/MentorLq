@@ -174,7 +174,7 @@ export default function MenteeSignup() {
   </div>
 
   <p className="text-xs text-gray-500 mt-2">
-    Upload a clear professional-looking photo
+    Upload a clear professional-looking photo(should not be greater than 1 MB)
   </p>
 </div>
 
