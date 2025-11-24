@@ -167,7 +167,7 @@ export default function MentorSignup() {
     />
   </div>
 
-  <p className="text-xs text-gray-500 mt-2">Only JPG / JPEG allowed</p>
+  <p className="text-xs text-gray-500 mt-2">Upload a professional photo(should not be greater than 1 MB)</p>
 </div>
 
 
