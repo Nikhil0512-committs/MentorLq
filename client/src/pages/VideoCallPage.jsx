@@ -11,7 +11,7 @@ import {
 } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 // Optional: Overwrite Stream's default grid css to ensure full coverage if needed
-import "./stream-overrides.css"; 
+
 
 import api from "../axios";
 import { UserContext } from "../context/UserContext";
