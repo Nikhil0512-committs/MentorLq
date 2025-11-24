@@ -5,16 +5,20 @@ import {
   StreamVideoClient,
   StreamCall,
   StreamTheme,
-  SpeakerLayout,
+  PaginatedGridLayout, // <--- CHANGED: Used for equal sizing
   CallControls,
-  CallParticipantsList,
+  // CallParticipantsList, <--- REMOVED
 } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
+// Optional: Overwrite Stream's default grid css to ensure full coverage if needed
+import "./stream-overrides.css"; 
 
 import api from "../axios";
 import { UserContext } from "../context/UserContext";
 import { MentorContext } from "../context/MentorContext";
 import { toast } from "react-toastify";
+
+// You might not need this file if standard CSS works, but adding inline styles below just in case.
 
 export default function VideoCallPage() {
   const { peerId: rawPeerId } = useParams();
@@ -159,7 +163,7 @@ export default function VideoCallPage() {
   }, [me, peerId, myName, navigate]);
 
   // ---------------------------
-  // Leave Handler (Also sends event to ChatPage)
+  // Leave Handler
   // ---------------------------
   const handleLeave = async () => {
     try {
@@ -201,47 +205,46 @@ export default function VideoCallPage() {
   if (!videoClient || !call) return null;
 
   // ---------------------------
-  // MOBILE OPTIMIZED UI
+  // CLEAN EQUAL LAYOUT UI
   // ---------------------------
   return (
     <StreamVideo client={videoClient}>
       <StreamTheme>
-        {/* IMPORTANT: Prevent implicit join */}
         <StreamCall call={call} join={false}>
-          {/* Main Container: Uses 100dvh for proper mobile browser height */}
+          {/* Main Container */}
           <div className="h-[100dvh] w-screen bg-[#121417] relative flex flex-col overflow-hidden">
             
-            {/* Header - Absolute & Transparent */}
-            <div className="absolute top-0 left-0 w-full p-3 md:p-4 z-20 flex justify-between items-start bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none">
-              
-              {/* Badge */}
+            {/* Header: Minimal "Live" Badge only (Participants Removed) */}
+            <div className="absolute top-0 left-0 w-full p-4 z-20 flex justify-between items-start pointer-events-none">
               <div className="pointer-events-auto flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 shadow-sm">
                 <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
                 <span className="text-white text-xs md:text-sm font-medium tracking-wide">
                   Live
                 </span>
               </div>
+            </div>
 
-              {/* Participants */}
-              <div className="pointer-events-auto transform scale-90 origin-top-right md:scale-100">
-                <CallParticipantsList />
+            {/* Video Grid: Uses PaginatedGridLayout for Equal Sizing */}
+            <div className="flex-1 w-full h-full relative flex items-center justify-center">
+              {/* custom-grid-wrapper is just a conceptual class. 
+                 The styling below ensures the grid takes full space 
+                 and participants are sized equally.
+              */}
+              <div className="w-full h-full [&_.str-video__paginated-grid-layout]:h-full [&_.str-video__paginated-grid-layout]:w-full">
+                 <PaginatedGridLayout 
+                    groupSize={2} // Forces logic to prioritize 2 people equally
+                    videoPlaceholder={false} // Clean look if camera is off
+                 />
               </div>
             </div>
 
-            {/* Video Grid - Maximize Space */}
-            <div className="flex-1 flex items-center justify-center w-full h-full relative">
-              {/* Removed heavy padding/borders for mobile to make video larger */}
-              <div className="w-full h-full md:max-w-6xl md:h-auto md:aspect-video md:rounded-3xl md:overflow-hidden md:border md:border-white/5 md:bg-black/20 md:backdrop-blur-sm">
-                <SpeakerLayout participantsBarPosition="bottom" />
-              </div>
-            </div>
-
-            {/* Controls - Mobile Friendly Position */}
+            {/* Controls: Centered at bottom */}
             <div className="absolute bottom-6 md:bottom-8 left-0 w-full z-30 flex justify-center px-4 pointer-events-none">
               <div className="pointer-events-auto bg-gray-900/90 backdrop-blur-xl border border-white/10 px-4 py-3 md:px-6 md:py-4 rounded-2xl md:rounded-full shadow-2xl flex gap-3 md:gap-4 items-center overflow-x-auto max-w-full no-scrollbar transition-all duration-300">
                 <CallControls onLeave={handleLeave} />
               </div>
             </div>
+
           </div>
         </StreamCall>
       </StreamTheme>
