@@ -28,13 +28,22 @@ export default function MenteeSignup() {
   const [selectedMentorship, setSelectedMentorship] = useState([]);
 
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    setPhotoFile(file);
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreview(url);
+    const file = e.target.files[0];
+
+    // FIX START: Prevent upload if file is missing or too large
+    if (!file) return;
+
+    // AWS Nginx default limit is 1MB. We restrict it here to prevent 413 Error.
+    if (file.size > 1 * 1024 * 1024) { 
+      alert("File is too large! Please choose an image smaller than 1MB.");
+      return; 
     }
-  };
+    // FIX END
+
+    setPhotoFile(file);
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+  };
 
   const toggleCareer = (item) => {
   setSelectedCareer((prev) => {
