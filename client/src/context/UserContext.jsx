@@ -25,7 +25,7 @@ export const UserProvider = ({ children }) => {
         setCurrentUser(null);
       }
     } catch (err) {
-      // ⭐ Silent 401: If not a user, just set null and stop.
+      
       if (err.response && err.response.status === 401) {
         setCurrentUser(null);
       } else {
@@ -45,7 +45,7 @@ export const UserProvider = ({ children }) => {
     try {
       const res = await api.post("/api/auth/login", { email, password });
       if (res?.data?.success) {
-        await checkAuth(); // Force refresh
+        await checkAuth(); 
         return { success: true };
       }
       return { success: false, message: res?.data?.message || "Login failed" };
