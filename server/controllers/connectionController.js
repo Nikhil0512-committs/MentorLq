@@ -1,8 +1,3 @@
-// controllers/connection.controller.js
-// Improved, robust connection controller
-// - works for mentee and mentor callers where applicable
-// - ensures populated fields include photo, specialization, skills, linkedIn
-// - uses string comparisons for ObjectId equality
 
 export const sendConnectionRequest = async (req, res) => {
   try {
@@ -36,7 +31,7 @@ export const sendConnectionRequest = async (req, res) => {
 
 export const getIncomingRequests = async (req, res) => {
   try {
-    // This route is intended for mentors (mentorAuth) so prefer req.mentor
+    
     const mentorId = req.mentor?._id || req.user?.id;
     if (!mentorId) return res.status(401).json({ success: false, message: "Not authenticated as mentor" });
 
@@ -93,7 +88,7 @@ export const acceptConnectionRequest = async (req, res) => {
     request.status = "accepted";
     await request.save();
 
-    // add to users' connections arrays (use addToSet)
+    
     await global.User.findByIdAndUpdate(request.sender, {
       $addToSet: { connections: request.recipient },
     });
@@ -101,7 +96,7 @@ export const acceptConnectionRequest = async (req, res) => {
       $addToSet: { connections: request.sender },
     });
 
-    // return the populated connection (optional)
+    
     const populated = await global.ConnectionRequest.findById(requestId)
       .populate("sender", "name email photo specialization skills linkedIn")
       .populate("recipient", "name email photo specialization skills linkedIn");
@@ -157,13 +152,6 @@ export const getFriendRequestsForMentor = async (req, res) => {
   }
 };
 
-/**
- * getConnections
- * - This is used by both mentee (userAuth) and mentor (mentorAuth) clients.
- * - It returns all accepted connections where the caller is either sender or recipient.
- * - We populate both sides with the fields client UI needs.
- */
-// 🔥 DANGER: One-time route to clear all connections
 
 export const getConnections = async (req, res) => {
   try {
@@ -177,11 +165,9 @@ export const getConnections = async (req, res) => {
     })
       .populate("sender", "name email photo specialization careerInterest mentorshipAreas  bio linkedIn ")
       .populate("recipient", "name email photo specialization skills bio linkedIn")
-      .sort({ updatedAt: -1 }); // ⭐ Show newest connections first
+      .sort({ updatedAt: -1 }); 
 
-    // 2. ⭐ CRITICAL FIX: Filter out "Ghosts"
-    // If a user was deleted from the DB, 'sender' or 'recipient' will be null.
-    // We filter those out so the frontend never receives them.
+  
     const validConnections = connections.filter(c => {
         return c.sender?._id && c.recipient?._id;
     });
@@ -193,18 +179,13 @@ export const getConnections = async (req, res) => {
   }
 };
 
-// server/controllers/connectionController.js
 
-// ... existing functions (sendConnectionRequest, getConnections, etc.) ...
-
-// 🔥 DANGER: One-time function to clear all connections
 export const nukeConnections = async (req, res) => {
   try {
-    // 1. Delete all connection requests
+    
     await global.ConnectionRequest.deleteMany({});
     
-    // 2. (Optional but recommended) Clear the connections array in Users and Mentors too
-    // This ensures no "ghost" IDs remain in the user profiles
+   
     if (global.User) {
       await global.User.updateMany({}, { $set: { connections: [] } });
     }
