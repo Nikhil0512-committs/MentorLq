@@ -1,7 +1,4 @@
-// controllers/userController.js
 
-// ❗ DO NOT import mongoose or remake the model
-// Use the global.User model created in server.js
 
 export const getUserData = async (req, res) => {
   try {
@@ -13,7 +10,7 @@ export const getUserData = async (req, res) => {
       });
     }
 
-    // Use the correct model
+   
     const user = await global.User
       .findById(userId)
       .select(
