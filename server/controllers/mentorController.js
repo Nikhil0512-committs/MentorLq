@@ -1,24 +1,24 @@
 import mentorSchema from "../models/mentorModel.js";
 import mongoose from "mongoose";
-import jwt from "jsonwebtoken"; // ✅ Import JWT
+import jwt from "jsonwebtoken"; 
 
 const mentorModel = mongoose.models.Mentor || mongoose.model("Mentor", mentorSchema);
 
 export const getMentorData = async (req, res) => {
   try {
-    // 1. Manually get the token from cookies
+    
     const { mentorToken } = req.cookies;
 
-    // 2. If no token, return success: false (This avoids the 401 console error)
+    
     if (!mentorToken) {
       return res.json({ success: false, message: "No token provided" });
     }
 
-    // 3. Verify the token manually
+   
     const decoded = jwt.verify(mentorToken, process.env.JWT_SECRET);
     const mentorId = decoded.id;
 
-    // 4. Fetch Mentor
+   
     const mentor = await mentorModel.findById(mentorId).select("-password");
 
     if (!mentor) {
@@ -39,8 +39,7 @@ export const getMentorData = async (req, res) => {
       },
     });
   } catch (error) {
-    // If token is invalid (e.g. expired), jwt.verify throws an error.
-    // We catch it and return false, keeping the console clean.
+   
     res.json({ success: false, message: error.message });
   }
 };
