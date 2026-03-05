@@ -13,8 +13,7 @@ export const MentorProvider = ({ children }) => {
 
   const fetchConnections = async () => {
     try {
-      // Ensure your connection routes also handle missing auth gracefully if needed,
-      // or wrap this in a try/catch as usual.
+      
       const { data } = await api.get("/api/req/mentor/connections");
       if (data.success) setConnections(data.connections || []);
     } catch (error) { console.log("Conn fetch error", error); }
@@ -24,7 +23,7 @@ export const MentorProvider = ({ children }) => {
     try {
       const { data } = await api.get("/api/mentor/data");
 
-      // ✅ Backend now returns success: false if not logged in (instead of 401)
+      
       if (data.success) {
         setMentorProfile(data.mentorData);
         fetchConnections();
@@ -33,7 +32,7 @@ export const MentorProvider = ({ children }) => {
         setConnections([]);
       }
     } catch (error) {
-      // This catch block handles actual network failures (e.g. server down)
+      
       console.error("Mentor fetch error:", error);
       setMentorProfile(null);
     } finally {
